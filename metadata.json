@@ -1,0 +1,6 @@
+{
+  "name": "MentMar — Ecosistema Educativo STEM",
+  "description": "Plataforma educativa interactiva de MentMar para aprender computación básica, programación, desarrollo web, IoT, tecnología social, finanzas personales y administración del tiempo con certificación oficial.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,272 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Private user account profile, academic grade, role, and 2FA security settings.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "email": { "type": "string", "format": "email", "minLength": 3, "maxLength": 200 },
+        "displayName": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "role": { "type": "string", "enum": ["student", "teacher"] },
+        "academicGrade": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "twoFactorEnabled": { "type": "boolean" },
+        "twoFactorSecretEnc": { "type": "string", "maxLength": 256 },
+        "pushEnabled": { "type": "boolean" },
+        "teacherCodeJoined": { "type": "string", "maxLength": 40 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "displayName", "role", "academicGrade", "twoFactorEnabled", "twoFactorSecretEnc", "pushEnabled", "createdAt", "updatedAt"]
+    },
+    "UserCertificate": {
+      "title": "UserCertificate",
+      "description": "Minimalist PDF certificate stored in the user's Mis Constancias profile subcollection.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "studentName": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "academicGrade": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "levelId": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "levelTitle": { "type": "string", "minLength": 2, "maxLength": 160 },
+        "totalLessons": { "type": "number" },
+        "score": { "type": "number" },
+        "verificationCode": { "type": "string", "minLength": 6, "maxLength": 64 },
+        "pdfDataBase64": { "type": "string", "minLength": 20, "maxLength": 350000 },
+        "fileSizeBytes": { "type": "number" },
+        "issuedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "uid", "studentName", "academicGrade", "levelId", "levelTitle", "totalLessons", "score", "verificationCode", "pdfDataBase64", "fileSizeBytes", "issuedAt"]
+    },
+    "UserBadge": {
+      "title": "UserBadge",
+      "description": "Unlockable achievement badge earned when a student completes lessons or curriculum milestones.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "badgeId": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "title": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "category": { "type": "string", "enum": ["milestone", "mastery", "specialization", "workshop"] },
+        "unlockedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "uid", "badgeId", "title", "category", "unlockedAt"]
+    },
+    "UserJournalEntry": {
+      "title": "UserJournalEntry",
+      "description": "Private E2EE daily learning reflection linked to a completed course and lesson.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "entryDate": { "type": "string", "minLength": 10, "maxLength": 10, "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "levelId": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "levelTitle": { "type": "string", "minLength": 2, "maxLength": 160 },
+        "lessonId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "lessonTitle": { "type": "string", "minLength": 2, "maxLength": 200 },
+        "confidence": { "type": "string", "enum": ["dominado", "en_practica", "repasar"] },
+        "encryptedContent": { "type": "string", "minLength": 4, "maxLength": 6000 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "uid", "entryDate", "levelId", "levelTitle", "lessonId", "lessonTitle", "confidence", "encryptedContent", "createdAt", "updatedAt"]
+    },
+    "Enrollment": {
+      "title": "Enrollment",
+      "description": "Non-PII scalable academic progress summary synchronized across devices and visible to the assigned teacher.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "studentName": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "academicGrade": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "role": { "type": "string", "enum": ["student", "teacher"] },
+        "teacherUid": { "type": "string", "maxLength": 128 },
+        "classroomCode": { "type": "string", "maxLength": 40 },
+        "completedCount": { "type": "number" },
+        "totalMinutes": { "type": "number" },
+        "averageScore": { "type": "number" },
+        "levelProgress": { "type": "object" },
+        "weeklyMinutes": { "type": "array" },
+        "lastLessonId": { "type": "string", "maxLength": 100 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "studentName", "academicGrade", "role", "teacherUid", "classroomCode", "completedCount", "totalMinutes", "averageScore", "levelProgress", "weeklyMinutes", "lastLessonId", "createdAt", "updatedAt"]
+    },
+    "LessonProgress": {
+      "title": "LessonProgress",
+      "description": "Individual lesson completion, quiz score, and E2EE personal reflection notes.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "lessonId": { "type": "string", "minLength": 1, "maxLength": 100, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "levelId": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "status": { "type": "string", "enum": ["in_progress", "completed"] },
+        "score": { "type": "number" },
+        "encryptedNotes": { "type": "string", "maxLength": 4000 },
+        "completedAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "lessonId", "levelId", "status", "score", "encryptedNotes", "completedAt", "updatedAt"]
+    },
+    "Certificate": {
+      "title": "Certificate",
+      "description": "Legacy top-level certificate metadata reference.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "studentName": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "academicGrade": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "levelId": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "levelTitle": { "type": "string", "minLength": 2, "maxLength": 160 },
+        "totalLessons": { "type": "number" },
+        "score": { "type": "number" },
+        "verificationCode": { "type": "string", "minLength": 6, "maxLength": 64 },
+        "issuedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "uid", "studentName", "academicGrade", "levelId", "levelTitle", "totalLessons", "score", "verificationCode", "issuedAt"]
+    },
+    "Material": {
+      "title": "Material",
+      "description": "Didactic material uploaded by instructors for any curriculum level or workshop.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "authorUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "authorName": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "levelId": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "moduleTitle": { "type": "string", "minLength": 2, "maxLength": 160 },
+        "lessonTitle": { "type": "string", "minLength": 2, "maxLength": 180 },
+        "materialType": { "type": "string", "enum": ["lectura", "organizador", "multimedia", "simulador", "imagen", "ejercicio"] },
+        "description": { "type": "string", "minLength": 4, "maxLength": 1000 },
+        "content": { "type": "string", "minLength": 4, "maxLength": 8000 },
+        "resourceUrl": { "type": "string", "maxLength": 500 },
+        "durationMinutes": { "type": "number" },
+        "isPublished": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "authorUid", "authorName", "levelId", "moduleTitle", "lessonTitle", "materialType", "description", "content", "resourceUrl", "durationMinutes", "isPublished", "createdAt", "updatedAt"]
+    },
+    "CommunityPost": {
+      "title": "CommunityPost",
+      "description": "Peer learning discussions and project showcases in the MentMar community.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "authorUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "authorName": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "authorRole": { "type": "string", "enum": ["student", "teacher"] },
+        "academicGrade": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "levelTag": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "title": { "type": "string", "minLength": 3, "maxLength": 160 },
+        "body": { "type": "string", "minLength": 4, "maxLength": 3000 },
+        "likesCount": { "type": "number" },
+        "isPublished": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "authorUid", "authorName", "authorRole", "academicGrade", "levelTag", "title", "body", "likesCount", "isPublished", "createdAt", "updatedAt"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "Personalized user notification synced in real time across devices.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "title": { "type": "string", "minLength": 2, "maxLength": 140 },
+        "message": { "type": "string", "minLength": 2, "maxLength": 500 },
+        "category": { "type": "string", "enum": ["progress", "certificate", "calendar", "material", "security"] },
+        "read": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "uid", "title", "message", "category", "read", "createdAt", "updatedAt"]
+    },
+    "Classroom": {
+      "title": "Classroom",
+      "description": "Teacher cohort room with unique join code for real-time student monitoring.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "code": { "type": "string", "minLength": 4, "maxLength": 40, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "name": { "type": "string", "minLength": 2, "maxLength": 140 },
+        "teacherUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "teacherName": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "gradeLevel": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "isActive": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "code", "name", "teacherUid", "teacherName", "gradeLevel", "isActive", "createdAt", "updatedAt"]
+    },
+    "LeaderboardEntry": {
+      "title": "LeaderboardEntry",
+      "description": "Non-PII student points summary for the Global Top 10 Ranking.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "displayName": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "academicGrade": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "points": { "type": "number" },
+        "completedCount": { "type": "number" },
+        "averageScore": { "type": "number" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "displayName", "academicGrade", "points", "completedCount", "averageScore", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Private user PII, academic grade, role, and 2FA security settings."
+    },
+    "/users/{userId}/certificates/{certificateId}": {
+      "schema": { "$ref": "#/entities/UserCertificate" },
+      "description": "User profile Mis Constancias section containing generated PDF certificate binaries and metadata."
+    },
+    "/users/{userId}/badges/{badgeId}": {
+      "schema": { "$ref": "#/entities/UserBadge" },
+      "description": "User profile unlockable achievement badges earned by completing lessons and milestones."
+    },
+    "/users/{userId}/journalEntries/{entryId}": {
+      "schema": { "$ref": "#/entities/UserJournalEntry" },
+      "description": "Private daily learning journal reflections linked to completed courses and lessons."
+    },
+    "/enrollments/{enrollmentId}": {
+      "schema": { "$ref": "#/entities/Enrollment" },
+      "description": "Non-PII real-time student progress summary accessible to student and assigned teacher."
+    },
+    "/enrollments/{enrollmentId}/lessonProgress/{lessonId}": {
+      "schema": { "$ref": "#/entities/LessonProgress" },
+      "description": "Per-lesson completion state and E2EE personal reflection notes."
+    },
+    "/certificates/{certificateId}": {
+      "schema": { "$ref": "#/entities/Certificate" },
+      "description": "Top-level earned level completion certificate index."
+    },
+    "/materials/{materialId}": {
+      "schema": { "$ref": "#/entities/Material" },
+      "description": "Teacher-uploaded didactic resources."
+    },
+    "/communityPosts/{postId}": {
+      "schema": { "$ref": "#/entities/CommunityPost" },
+      "description": "Community learning posts."
+    },
+    "/notifications/{notificationId}": {
+      "schema": { "$ref": "#/entities/Notification" },
+      "description": "User push and in-app notifications."
+    },
+    "/classrooms/{classroomId}": {
+      "schema": { "$ref": "#/entities/Classroom" },
+      "description": "Teacher classrooms for grouping students."
+    },
+    "/leaderboard/{userId}": {
+      "schema": { "$ref": "#/entities/LeaderboardEntry" },
+      "description": "Non-PII student points summary powering the Global Top 10 Ranking."
+    }
+  }
+}
